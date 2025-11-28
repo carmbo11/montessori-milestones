@@ -1,20 +1,77 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# Montessori Milestones
 
-# Run and deploy your AI Studio app
+A Montessori-focused parenting website with an AI-powered chatbot assistant ("Ask Maria") that helps parents choose age-appropriate educational materials.
 
-This contains everything you need to run your app locally.
+## Tech Stack
 
-View your app in AI Studio: https://ai.studio/apps/drive/1BZXsMwi9OXE_OSkYa2nynCkL0x2Ox3Ik
+- **Frontend:** React 19 + TypeScript + Vite
+- **AI:** Groq API (Llama 3.1 70B)
+- **Hosting:** Vercel
+- **Domain:** montessorimilestones.com
 
-## Run Locally
+## Features
 
-**Prerequisites:**  Node.js
+- AI chatbot ("Ask Maria") - virtual Maria Montessori guide for product recommendations
+- Product catalog with Lovevery affiliate links
+- Blog/content carousel
+- CRM system for leads management
+- Daily AI-generated Montessori quotes
 
+## Local Development
+
+**Prerequisites:** Node.js
 
 1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+   ```bash
+   npm install
+   ```
+
+2. Set up environment variables in `.env.local`:
+   ```
+   GROQ_API_KEY=your_groq_api_key_here
+   ```
+
+3. Run the dev server:
+   ```bash
+   npm run dev
+   ```
+
+4. Open http://localhost:3000
+
+## Deployment
+
+Hosted on Vercel with automatic deployments from GitHub.
+
+- **Production URL:** https://montessorimilestones.com
+- **Vercel URL:** https://montessori-milestones.vercel.app
+
+## Environment Variables
+
+| Variable | Description |
+|----------|-------------|
+| `GROQ_API_KEY` | Groq API key for AI chatbot |
+
+Set in Vercel dashboard under Project Settings > Environment Variables.
+
+---
+
+## Session Notes (2025-11-28)
+
+### Completed
+- Migrated AI from Google Gemini to Groq (Llama 3.1 70B) for free tier usage
+- Created `services/groqService.ts` replacing `geminiService.ts`
+- Deployed to Vercel
+- Added GROQ_API_KEY to Vercel environment variables
+- Created GitHub repo: https://github.com/carmbo11/montessori-milestones
+- Configured custom domain (montessorimilestones.com) with Vercel nameservers
+
+### Pending
+- DNS propagation for custom domain (nameservers changed to ns1/ns2.vercel-dns.com)
+- Disable Vercel Authentication if site requires login to view
+- Consider upgrading to newer Groq models (llama-3.3-70b-versatile)
+- Add conversation history to chatbot for better context
+- Consider RAG implementation for scalable product recommendations
+
+### Known Issues
+- API key exposed in client-side bundle (acceptable for demo, consider serverless functions for production)
+- No conversation memory in chatbot - each message is independent
