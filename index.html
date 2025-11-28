@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Montessori Milestones</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+      :root {
+        /* RGB Channels for dynamic tailwind opacity support */
+        --brand-darkest: 47 7 12;     /* #2F070C */
+        --brand-deep: 65 7 9;         /* #410709 */
+        --brand-wine: 126 28 46;      /* #7E1C2E */
+        --brand-plum: 143 74 145;     /* #8F4A91 */
+        --brand-clay: 194 95 48;      /* #C25F30 */
+        --brand-cream: 253 251 247;   /* #FDFBF7 */
+        --brand-paper: 242 235 229;   /* #F2EBE5 */
+      }
+      
+      body {
+        background-color: rgb(var(--brand-cream));
+        color: rgb(var(--brand-darkest));
+      }
+      /* Hide scrollbar for clean carousel */
+      .no-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+    </style>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              brand: {
+                darkest: 'rgb(var(--brand-darkest) / <alpha-value>)', 
+                deep: 'rgb(var(--brand-deep) / <alpha-value>)',
+                wine: 'rgb(var(--brand-wine) / <alpha-value>)',
+                plum: 'rgb(var(--brand-plum) / <alpha-value>)',
+                clay: 'rgb(var(--brand-clay) / <alpha-value>)',
+                cream: 'rgb(var(--brand-cream) / <alpha-value>)',
+                paper: 'rgb(var(--brand-paper) / <alpha-value>)',
+              }
+            },
+            fontFamily: {
+              serif: ['"Playfair Display"', 'serif'],
+              sans: ['Lato', 'sans-serif'],
+            }
+          }
+        }
+      }
+    </script>
+  <script type="importmap">
+{
+  "imports": {
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.30.0",
+    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.555.0"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body>
+    <div id="root"></div>
+  <script type="module" src="/index.tsx"></script>
+</body>
+</html>
