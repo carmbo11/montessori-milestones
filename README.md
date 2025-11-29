@@ -73,5 +73,8 @@ Set in Vercel dashboard under Project Settings > Environment Variables.
 - Consider RAG implementation for scalable product recommendations
 
 ### Known Issues
-- API key exposed in client-side bundle (acceptable for demo, consider serverless functions for production)
 - No conversation memory in chatbot - each message is independent
+
+### Completed (API Security)
+- Moved Groq API calls to Vercel serverless functions (`/api/chat`, `/api/quote`)
+- API key no longer exposed in client-side bundle
