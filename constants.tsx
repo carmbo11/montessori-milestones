@@ -1,4 +1,4 @@
-import { BlogPost, AffiliateProduct, Lead, CampaignStat } from './types';
+import { BlogPost, AffiliateProduct, Lead, CampaignStat, EducatorResource } from './types';
 import React from 'react';
 
 export const BLOG_POSTS: BlogPost[] = [
@@ -107,7 +107,7 @@ export const PRODUCTS: AffiliateProduct[] = [
     price: '$30.00',
     description: 'Realistic books reflecting the child\'s daily life. No fantasy, just relatable experiences.',
     imageUrl: 'https://picsum.photos/seed/books/400/400',
-    affiliateLink: 'https://lovevery.com/products/book-bundle',
+    affiliateLink: 'https://lovevery.com/products/the-reading-skill-set',
     ageRange: '0-5 years'
   }
 ];
@@ -157,5 +157,43 @@ export const STAFF_ADVICE = [
     name: 'Dr. Aris',
     role: 'Child Psychologist',
     advice: "The child's behavior is communication. When they are 'acting out', they are often speaking a language we have yet to translate."
+  }
+];
+
+export const EDUCATOR_RESOURCES: EducatorResource[] = [
+  {
+    id: '1',
+    title: 'Lesson Planning',
+    description: 'Weekly templates and scope & sequence guides for Primary (3-6) classrooms.',
+    icon: 'BookOpen',
+    comingSoon: true
+  },
+  {
+    id: '2',
+    title: 'Classroom Design',
+    description: 'Floor plans, shelf arrangement tips, and flow diagrams for the prepared environment.',
+    icon: 'Layout',
+    comingSoon: true
+  },
+  {
+    id: '3',
+    title: 'Observation Tools',
+    description: 'Record keeping sheets and digital tracking templates for student progress.',
+    icon: 'Eye',
+    comingSoon: true
+  },
+  {
+    id: '4',
+    title: 'Material Making',
+    description: 'DIY tutorials and printables for creating language and sensory materials.',
+    icon: 'Scissors',
+    comingSoon: true
+  },
+  {
+    id: '5',
+    title: 'Parent Handouts',
+    description: 'Ready-to-print guides to help explain Montessori concepts to parents.',
+    icon: 'Download',
+    comingSoon: true
   }
 ];

@@ -7,6 +7,9 @@ export interface BlogPost {
   category: 'Philosophy' | 'Environment' | 'Activity' | 'Review';
   images: string[];
   content: string; // HTML or Markdown string
+  seoTitle?: string;
+  seoMetaDesc?: string;
+  status?: 'published' | 'draft';
 }
 
 export interface AffiliateProduct {
@@ -18,6 +21,14 @@ export interface AffiliateProduct {
   affiliateLink: string;
   badge?: string;
   ageRange?: string; // e.g. "0-12 weeks", "13-15 months"
+  category?: string;
+}
+
+export interface StaffAdvice {
+  id: string;
+  name: string;
+  role: string;
+  advice: string;
 }
 
 export interface ChatMessage {
@@ -44,4 +55,12 @@ export interface CampaignStat {
   conversions: number;
   revenue: string;
   trend: 'up' | 'down' | 'neutral';
+}
+
+export interface EducatorResource {
+  id: string;
+  title: string;
+  description: string;
+  icon: 'BookOpen' | 'Layout' | 'Eye' | 'Scissors' | 'Download';
+  comingSoon?: boolean;
 }
