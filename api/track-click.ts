@@ -4,17 +4,14 @@ import { createClient } from '@supabase/supabase-js';
 // Initialize Supabase client
 const supabaseUrl = process.env.VITE_SUPABASE_URL!;
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.VITE_SUPABASE_ANON_KEY!;
-
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  // Allow GET (for redirect tracking) or POST (for async tracking)
   if (req.method !== 'GET' && req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
   try {
-    // Get params from query (GET) or body (POST)
     const params = req.method === 'GET' ? req.query : req.body;
     const { productId, linkId, redirect } = params;
 
@@ -22,7 +19,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(400).json({ error: 'Missing productId or linkId' });
     }
 
-    // Fetch the affiliate link to get the URL and network
+    // Fetch the affiliate link
     const { data: link, error: linkError } = await supabase
       .from('affiliate_links')
       .select('url, network')
@@ -47,15 +44,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     if (clickError) {
       console.error('Error recording click:', clickError);
-      // Don't fail the request, just log the error
     }
 
-    // If redirect=true (or GET request), redirect to the affiliate URL
+    // Redirect or return success
     if (redirect === 'true' || req.method === 'GET') {
       return res.redirect(302, link.url);
     }
 
-    // Otherwise return success
     return res.status(200).json({
       success: true,
       message: 'Click recorded',
