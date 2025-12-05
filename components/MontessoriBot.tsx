@@ -23,7 +23,8 @@ export const MontessoriBot: React.FC<MontessoriBotProps> = ({ variant = 'floatin
   };
 
   useEffect(() => {
-    if (isOpen || !isFloating) scrollToBottom();
+    // Only scroll after user has sent at least one message (not on initial render)
+    if ((isOpen || !isFloating) && messages.length > 1) scrollToBottom();
   }, [messages, isOpen, isFloating]);
 
   const handleSend = async () => {
