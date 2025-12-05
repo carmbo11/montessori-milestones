@@ -259,12 +259,23 @@ const App: React.FC = () => {
       </section>
 
       {/* Ask Maria AI Section (Inline) */}
-      <section className="py-16 bg-brand-cream border-t border-brand-paper">
-        <div className="container mx-auto px-6">
-            <div className="text-center mb-10">
-                <span className="text-brand-plum font-bold tracking-widest uppercase text-xs mb-2 block">AI Parenting Assistant</span>
-                <h2 className="text-4xl font-serif text-brand-darkest mb-4">Ask Maria</h2>
-                <p className="max-w-2xl mx-auto text-gray-600">
+      <section className="relative py-12 overflow-hidden">
+        {/* Background Image */}
+        <div className="absolute inset-0 z-0">
+          <img
+            src="https://images.unsplash.com/photo-1475113548554-5a36f1f523d6?q=80&w=2070&auto=format&fit=crop"
+            alt="Children playing in nature near water"
+            className="w-full h-full object-cover"
+          />
+          {/* Dark Overlay for readability */}
+          <div className="absolute inset-0 bg-brand-darkest/60"></div>
+        </div>
+
+        <div className="container mx-auto px-6 relative z-10">
+            <div className="text-center mb-8">
+                <span className="text-brand-clay font-bold tracking-widest uppercase text-xs mb-2 block">AI Parenting Assistant</span>
+                <h2 className="text-4xl md:text-5xl font-serif text-white mb-6">Ask Maria</h2>
+                <p className="max-w-2xl mx-auto text-white/90 text-lg font-light leading-relaxed">
                     Not sure which activity is right for your child? Our AI guide can help match developmental stages to the perfect environment.
                 </p>
             </div>
