@@ -75,14 +75,23 @@ The chatbot "Maria" (inspired by Maria Montessori) helps parents find appropriat
   - DNS: MX records, SPF, DKIM all configured
   - Gmail "Send mail as" set up for outbound email
 
+### Completed (Dec 5, 2024)
+- [x] **React Router** - Proper URL-based routing (SPA navigation)
+- [x] **Page Components** - Extracted from monolithic App.tsx (~800 → ~115 lines)
+- [x] **Layout Component** - Shared header/footer wrapper
+- [x] **Blog Archive** - `/blog` page with category filter pills
+- [x] **Privacy Policy** - `/privacy` with AI chatbot data handling, GDPR/CCPA
+- [x] **Terms of Service** - `/terms` with FTC affiliate disclosure (Pennsylvania jurisdiction)
+- [x] **Further Exploration** - Horizontal scroll carousel on blog posts
+- [x] **Admin Auth** - Supabase magic link authentication for CMS
+
 ### Remaining Tasks
-1. **Admin Auth** - Supabase Auth to protect CMS (footer link)
-2. **Impact.com API** - Connect affiliate dashboard, auto-sync products
-3. **Chatbot Enhancements** - Expand Lovevery catalog (22 Play Kits), improve conversation flow
+1. **Impact.com API** - Connect affiliate dashboard, auto-sync products
+2. **Chatbot Enhancements** - Expand Lovevery catalog (22 Play Kits), improve conversation flow
 
 ### Infrastructure Status
 - [x] Cloudflare: Domain active, email routing configured
-- [ ] Supabase: Create project, add auth
+- [x] Supabase: Auth configured (magic link for admin)
 - [ ] Impact.com: Get API credentials, build sync
 
 ## Feature Roadmap (MM Instance)
@@ -90,7 +99,7 @@ The chatbot "Maria" (inspired by Maria Montessori) helps parents find appropriat
 **Strategy:** Complete MM as single instance first, then extract to multi-tenant CMS platform.
 
 ### High Priority
-1. Add auth to CMS/admin (currently unprotected link in footer)
+1. ~~Add auth to CMS/admin~~ ✅ Done (Supabase magic link)
 2. Enhanced chatbot - expand Lovevery catalog (all 22 Play Kits, ages 0-5)
 3. Improve chatbot conversation flow (age detection, multi-turn memory)
 
@@ -102,11 +111,12 @@ The chatbot "Maria" (inspired by Maria Montessori) helps parents find appropriat
 
 ### Section Updates
 - Volunteer → link to Resources page
-- Wisdom from Staff → "View Educator Portal" button
+- ~~Wisdom from Staff → "View Educator Portal" button~~ ✅ Done (title shortened to "Wisdom", links to /educators)
 
-### Auth Options (for CMS)
-- Simple: Environment variable password (quick, single user)
-- Better: Supabase Auth (will reuse in multi-tenant CMS later)
+### Auth (Implemented)
+- Supabase Auth with magic link (email-based login)
+- Allowlist: `revella@montessorimilestones.com`
+- Admin check via `allowed_admins` table in Supabase
 
 ## Multi-Tenant CMS (Parallel Track)
 
@@ -144,12 +154,27 @@ montessori-milestones/
 │   ├── CRMSystem.tsx
 │   ├── FeaturedPostCarousel.tsx
 │   ├── Hero.tsx
+│   ├── Layout.tsx       # Shared header/footer wrapper
 │   ├── Logo.tsx
 │   ├── MontessoriBot.tsx
 │   └── ProductCard.tsx
+├── hooks/
+│   └── useAuth.ts       # Supabase auth hook
+├── pages/
+│   ├── AdminPage.tsx    # CMS admin (auth-protected)
+│   ├── BlogPage.tsx     # Blog archive with filters
+│   ├── BlogPostPage.tsx # Individual blog post
+│   ├── CategoryPage.tsx # Philosophy/Environment views
+│   ├── CommunityPage.tsx
+│   ├── EducatorsPage.tsx
+│   ├── HomePage.tsx     # Landing page
+│   ├── PrivacyPage.tsx  # Privacy policy
+│   ├── ShopPage.tsx     # Product catalog
+│   └── TermsPage.tsx    # Terms of service
 ├── services/
-│   └── groqService.ts   # Frontend API client
-├── App.tsx              # Main app component
+│   ├── groqService.ts   # Frontend API client
+│   └── supabase.ts      # Supabase client
+├── App.tsx              # Routes only (~115 lines)
 ├── constants.tsx        # All data (blog, products, etc.)
 ├── types.ts             # TypeScript interfaces
 ├── index.html
@@ -163,6 +188,8 @@ montessori-milestones/
 
 Required:
 - `GROQ_API_KEY` - Groq API key for chatbot
+- `VITE_SUPABASE_URL` - Supabase project URL
+- `VITE_SUPABASE_ANON_KEY` - Supabase anonymous key
 
 ## Development
 
