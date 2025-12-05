@@ -181,7 +181,7 @@ export const HomePage: React.FC = () => {
       <section className="py-12 px-6 container mx-auto">
         <div className="flex justify-between items-end mb-12">
           <h2 className="text-4xl font-serif text-brand-darkest">Recent Journal Entries</h2>
-          <Link to="/philosophy" className="text-brand-clay hover:underline">View All</Link>
+          <Link to="/blog" className="text-brand-clay hover:underline">View All</Link>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
           {posts.slice(0, 3).map((post) => (

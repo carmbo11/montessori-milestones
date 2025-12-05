@@ -8,6 +8,7 @@ import { ShopPage } from './pages/ShopPage';
 import { CommunityPage } from './pages/CommunityPage';
 import { EducatorsPage } from './pages/EducatorsPage';
 import { BlogPostPage } from './pages/BlogPostPage';
+import { BlogPage } from './pages/BlogPage';
 import { AdminPage } from './pages/AdminPage';
 import { BlogPost, AffiliateProduct, StaffAdvice } from './types';
 import { useAuth } from './hooks/useAuth';
@@ -86,6 +87,7 @@ const App: React.FC = () => {
       <Route path="/shop" element={<Layout><ShopPage /></Layout>} />
       <Route path="/community" element={<Layout><CommunityPage /></Layout>} />
       <Route path="/educators" element={<Layout><EducatorsPage /></Layout>} />
+      <Route path="/blog" element={<Layout><BlogPage /></Layout>} />
       <Route path="/blog/:id" element={<Layout><BlogPostPage /></Layout>} />
 
       {/* Admin route (no Layout wrapper - has its own layout) */}
