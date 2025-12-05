@@ -1,9 +1,148 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { hybridSearch, type SearchResult } from '../lib/vectorSearch';
 
 const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
 
-// Fallback products if vector search fails
+// ============================================================================
+// Types (inlined for Vercel serverless)
+// ============================================================================
+
+interface SparseVector {
+  indices: number[];
+  values: number[];
+}
+
+interface HybridEmbedding {
+  dense: number[];
+  sparse: SparseVector;
+}
+
+interface SearchResult {
+  id: string;
+  score: number;
+  metadata: {
+    name: string;
+    description: string;
+    ageRange: string;
+    affiliateLink: string;
+    type: string;
+    [key: string]: unknown;
+  };
+}
+
+// ============================================================================
+// Embedding Functions (inlined)
+// ============================================================================
+
+async function getDenseEmbedding(text: string): Promise<number[]> {
+  const apiKey = process.env.VOYAGE_API_KEY;
+  if (!apiKey) {
+    throw new Error('VOYAGE_API_KEY not configured');
+  }
+
+  const response = await fetch('https://api.voyageai.com/v1/embeddings', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${apiKey}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      input: [text],
+      model: 'voyage-3',
+    }),
+  });
+
+  if (!response.ok) {
+    const error = await response.text();
+    throw new Error(`Voyage API error: ${error}`);
+  }
+
+  const data = await response.json();
+  return data.data[0].embedding;
+}
+
+async function getSparseEmbedding(text: string): Promise<SparseVector> {
+  const spladeUrl = process.env.SPLADE_SERVICE_URL;
+  if (!spladeUrl) {
+    throw new Error('SPLADE_SERVICE_URL not configured');
+  }
+
+  const response = await fetch(`${spladeUrl}/embed`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ text }),
+  });
+
+  if (!response.ok) {
+    const error = await response.text();
+    throw new Error(`SPLADE service error: ${error}`);
+  }
+
+  const data = await response.json();
+  return data.sparse_vector;
+}
+
+async function getHybridEmbedding(text: string): Promise<HybridEmbedding> {
+  const [dense, sparse] = await Promise.all([
+    getDenseEmbedding(text),
+    getSparseEmbedding(text),
+  ]);
+
+  return { dense, sparse };
+}
+
+// ============================================================================
+// Vector Search Function (inlined)
+// ============================================================================
+
+async function hybridSearch(query: string, topK: number = 5): Promise<SearchResult[]> {
+  const upstashUrl = process.env.UPSTASH_VECTOR_REST_URL;
+  const upstashToken = process.env.UPSTASH_VECTOR_REST_TOKEN;
+
+  if (!upstashUrl || !upstashToken) {
+    throw new Error('Upstash Vector credentials not configured');
+  }
+
+  // Generate hybrid embedding for the query
+  const { dense, sparse } = await getHybridEmbedding(query);
+
+  // Query Upstash with hybrid vectors
+  const response = await fetch(`${upstashUrl}/query`, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${upstashToken}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      vector: dense,
+      sparseVector: {
+        indices: sparse.indices,
+        values: sparse.values,
+      },
+      topK,
+      includeMetadata: true,
+    }),
+  });
+
+  if (!response.ok) {
+    const error = await response.text();
+    throw new Error(`Upstash query error: ${error}`);
+  }
+
+  const data = await response.json();
+
+  return data.result.map((item: { id: string; score: number; metadata: Record<string, unknown> }) => ({
+    id: item.id,
+    score: item.score,
+    metadata: item.metadata as SearchResult['metadata'],
+  }));
+}
+
+// ============================================================================
+// Fallback Products (when RAG unavailable)
+// ============================================================================
+
 const FALLBACK_PRODUCTS = [
   { name: 'The Looker Play Kit', ageRange: '0-12 weeks', description: 'High-contrast visuals and sensory exploration tools perfect for building new brain connections.', affiliateLink: 'https://lovevery.com/products/the-looker-play-kit' },
   { name: 'The Inspector Play Kit', ageRange: '7-8 months', description: 'Practice object permanence and explore textures. Includes the famous ball drop box.', affiliateLink: 'https://lovevery.com/products/the-inspector-play-kit' },
@@ -11,23 +150,25 @@ const FALLBACK_PRODUCTS = [
   { name: 'The Block Set', ageRange: '12 months to 4+ years', description: 'A brilliant system of solid wood blocks for building spatial awareness. A forever toy.', affiliateLink: 'https://lovevery.com/products/the-block-set' },
 ];
 
-/**
- * Format search results into context for the LLM
- */
+// ============================================================================
+// Context Formatting
+// ============================================================================
+
 function formatProductContext(results: SearchResult[]): string {
   return results.map(r =>
     `- Product: "${r.metadata.name}"\n  Age Range: ${r.metadata.ageRange}\n  Description: ${r.metadata.description}\n  Link: ${r.metadata.affiliateLink}`
   ).join('\n\n');
 }
 
-/**
- * Format fallback products into context
- */
 function formatFallbackContext(): string {
   return FALLBACK_PRODUCTS.map(p =>
     `- Product: "${p.name}"\n  Age Range: ${p.ageRange}\n  Description: ${p.description}\n  Link: ${p.affiliateLink}`
   ).join('\n\n');
 }
+
+// ============================================================================
+// Main Handler
+// ============================================================================
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') {
