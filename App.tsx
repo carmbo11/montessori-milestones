@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Routes, Route, useNavigate, Link } from 'react-router-dom';
 import { BLOG_POSTS, PRODUCTS, NAV_LINKS, STAFF_ADVICE, EDUCATOR_RESOURCES } from './constants';
 import { Carousel } from './components/Carousel';
 import { FeaturedPostCarousel } from './components/FeaturedPostCarousel';
@@ -6,22 +7,24 @@ import { ProductCard } from './components/ProductCard';
 import { Button } from './components/Button';
 import { MontessoriBot } from './components/MontessoriBot';
 import { Hero } from './components/Hero';
-import { CRMSystem } from './components/CRMSystem';
-import { AdminLogin } from './components/AdminLogin';
 import { Logo } from './components/Logo';
+import { AdminPage } from './pages/AdminPage';
 import { Menu, X, Instagram, Facebook, Mail, Heart, ArrowRight, Lock, ArrowLeft, Users, Calendar, User, Quote, HandHeart, CalendarDays, MessageCircle, BookOpen, Layout, Eye, Scissors, Download, AlertCircle, Share2 } from 'lucide-react';
 import { generateBlogSummary } from './services/groqService';
 import { BlogPost, AffiliateProduct, StaffAdvice } from './types';
 import { useAuth } from './hooks/useAuth';
 
+// Check for magic link tokens BEFORE React renders (Supabase clears them quickly)
+const arrivedViaMagicLink = window.location.hash.includes('access_token') ||
+                            window.location.hash.includes('refresh_token');
+
 const App: React.FC = () => {
+  const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [dailyQuote, setDailyQuote] = useState("Loading daily inspiration...");
-  const [showCRM, setShowCRM] = useState(false);
-  const [showAdminLogin, setShowAdminLogin] = useState(false);
 
   // Auth state
-  const { user, isAdmin, loading: authLoading, signIn, signOut } = useAuth();
+  const { isAdmin, loading: authLoading } = useAuth();
 
   // Navigation State
   const [currentPage, setCurrentPage] = useState<string>('home');
@@ -40,27 +43,14 @@ const App: React.FC = () => {
     fetchQuote();
   }, []);
 
-  // Auto-open CRM when returning from magic link authentication
+  // Redirect to /admin when returning from magic link authentication
   useEffect(() => {
-    if (!authLoading && isAdmin) {
-      // Check if we just authenticated (URL contains auth tokens)
-      const hash = window.location.hash;
-      if (hash.includes('access_token') || hash.includes('refresh_token')) {
-        setShowCRM(true);
-        // Clean up the URL
-        window.history.replaceState(null, '', window.location.pathname);
-      }
+    if (!authLoading && isAdmin && arrivedViaMagicLink) {
+      // Clean up the URL hash and redirect to admin
+      window.history.replaceState(null, '', '/admin');
+      navigate('/admin');
     }
-  }, [authLoading, isAdmin]);
-
-  // Handle admin button click
-  const handleAdminClick = () => {
-    if (isAdmin) {
-      setShowCRM(true);
-    } else {
-      setShowAdminLogin(true);
-    }
-  };
+  }, [authLoading, isAdmin, navigate]);
 
   // --- CMS Handlers ---
 
@@ -589,34 +579,9 @@ const App: React.FC = () => {
       </div>
   );
 
-  return (
+  // Main site layout component
+  const MainSite = () => (
     <div className="min-h-screen font-sans text-brand-darkest bg-brand-cream selection:bg-brand-clay selection:text-white flex flex-col">
-
-      {/* Admin Login Modal */}
-      {showAdminLogin && (
-        <AdminLogin
-          onClose={() => setShowAdminLogin(false)}
-          onSignIn={signIn}
-        />
-      )}
-
-      {/* CRM Overlay - only accessible if authenticated as admin */}
-      {showCRM && isAdmin && (
-        <CRMSystem
-          onClose={() => setShowCRM(false)}
-          onSignOut={signOut}
-          userEmail={user?.email}
-          posts={posts}
-          products={products}
-          staffAdvice={staffAdvice}
-          onSavePost={handleSavePost}
-          onDeletePost={handleDeletePost}
-          onSaveProduct={handleSaveProduct}
-          onDeleteProduct={handleDeleteProduct}
-          onSaveStaffAdvice={handleSaveStaffAdvice}
-        />
-      )}
-
       {/* --- HEADER --- */}
       <header className={`fixed top-0 w-full z-50 transition-all duration-300 ${currentPage === 'home' && !viewPost ? 'bg-transparent border-white/10' : 'bg-white shadow-md border-gray-100'} border-b backdrop-blur-md`}>
         <div className="container mx-auto px-6 py-4 flex justify-between items-center">
@@ -747,15 +712,14 @@ const App: React.FC = () => {
 
           <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center text-white/40 text-sm">
             <p>&copy; 2024 Montessori Milestones.</p>
-            <div className="flex items-center space-x-6 mt-4 md:mt-0">
-              <button
-                onClick={handleAdminClick}
-                className="flex items-center gap-1 hover:text-brand-clay transition-colors"
-                title="Admin Access"
-              >
-                <Lock size={12} /> {isAdmin ? 'Open Admin' : 'Admin Login'}
-              </button>
-            </div>
+            <div className="flex-1" />
+            <Link
+              to="/admin"
+              className="flex items-center gap-1 hover:text-brand-clay transition-colors opacity-50 hover:opacity-100 mt-4 md:mt-0"
+              title="Admin Access"
+            >
+              <Lock size={12} /> Admin
+            </Link>
           </div>
         </div>
       </footer>
@@ -763,6 +727,28 @@ const App: React.FC = () => {
       {/* --- AI BOT --- */}
       {(currentPage !== 'home' && !viewPost) && <MontessoriBot variant="floating" />}
     </div>
+  );
+
+  // Routes wrapper
+  return (
+    <Routes>
+      <Route path="/" element={<MainSite />} />
+      <Route
+        path="/admin"
+        element={
+          <AdminPage
+            posts={posts}
+            products={products}
+            staffAdvice={staffAdvice}
+            onSavePost={handleSavePost}
+            onDeletePost={handleDeletePost}
+            onSaveProduct={handleSaveProduct}
+            onDeleteProduct={handleDeleteProduct}
+            onSaveStaffAdvice={handleSaveStaffAdvice}
+          />
+        }
+      />
+    </Routes>
   );
 };
 

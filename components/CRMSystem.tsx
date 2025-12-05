@@ -190,7 +190,7 @@ export const CRMSystem: React.FC<CRMSystemProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-[100] bg-brand-paper flex overflow-hidden animate-fade-in font-sans">
+    <div className="min-h-screen bg-brand-paper flex overflow-hidden animate-fade-in font-sans">
       {/* Sidebar */}
       <aside className="w-64 bg-brand-darkest text-white flex flex-col flex-shrink-0 shadow-2xl transition-colors duration-500">
         <div className="p-6 border-b border-white/10">
@@ -288,7 +288,7 @@ export const CRMSystem: React.FC<CRMSystemProps> = ({
         </header>
 
         {/* Content Area */}
-        <div className="flex-1 overflow-auto p-8">
+        <div className="flex-1 overflow-y-auto overflow-x-hidden p-8">
 
           {/* DASHBOARD TAB */}
           {activeTab === 'dashboard' && (

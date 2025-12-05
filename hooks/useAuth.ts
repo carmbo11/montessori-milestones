@@ -48,7 +48,7 @@ export function useAuth(): AuthState & AuthActions {
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: {
-        emailRedirectTo: window.location.origin,
+        emailRedirectTo: `${window.location.origin}/admin`,
       },
     });
 
