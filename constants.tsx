@@ -113,10 +113,10 @@ export const PRODUCTS: AffiliateProduct[] = [
 ];
 
 export const NAV_LINKS = [
-  { label: 'Philosophy', page: 'philosophy' },
-  { label: 'Environment', page: 'environment' },
-  { label: 'The Shop', page: 'shop' },
-  { label: 'Community', page: 'community' },
+  { label: 'Philosophy', path: '/philosophy' },
+  { label: 'Environment', path: '/environment' },
+  { label: 'The Shop', path: '/shop' },
+  { label: 'Community', path: '/community' },
 ];
 
 export const MOCK_LEADS: Lead[] = [
