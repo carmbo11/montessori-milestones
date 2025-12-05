@@ -79,11 +79,11 @@ export const BlogPostPage: React.FC = () => {
 
         {/* Gallery if more images */}
         {post.images.length > 1 && (
-          <div className="mt-16">
-            <h3 className="text-2xl font-serif font-bold mb-6">Gallery</h3>
+          <div className="mt-16 text-center">
+            <h3 className="text-2xl font-serif font-bold mb-8">Gallery</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {post.images.slice(1).map((img, idx) => (
-                <img key={idx} src={img} alt="Gallery" className="rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300" />
+                <img key={idx} src={img} alt="Gallery" className="w-full h-72 object-cover rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 mx-auto" />
               ))}
             </div>
           </div>

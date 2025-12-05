@@ -136,7 +136,7 @@ export const HomePage: React.FC = () => {
           <div className="flex flex-col md:flex-row justify-between items-end mb-12">
             <div className="max-w-2xl">
               <span className="text-brand-clay font-bold tracking-widest uppercase text-xs mb-2 block">Expert Insights</span>
-              <h2 className="text-4xl md:text-5xl font-serif text-white mb-6">Wisdom from the Staff</h2>
+              <h2 className="text-4xl md:text-5xl font-serif text-white mb-6">Wisdom</h2>
               <p className="text-white/70 text-lg">
                 Guidance, reminders, and professional observations from the educators who know your children best.
               </p>
