@@ -248,7 +248,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (!response.ok) {
       const error = await response.text();
       console.error("Groq API error:", error);
-      return res.status(response.status).json({ error: 'AI service error' });
+      return res.status(response.status).json({ error: 'AI service error', details: error });
     }
 
     const data = await response.json();
