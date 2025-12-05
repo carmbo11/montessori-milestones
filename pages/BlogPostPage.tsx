@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
-import { BLOG_POSTS } from '../constants';
+import { BLOG_POSTS, PRODUCTS } from '../constants';
 import { Button } from '../components/Button';
 import { ArrowLeft, User, Calendar, Share2 } from 'lucide-react';
 
@@ -21,6 +21,10 @@ export const BlogPostPage: React.FC = () => {
       </div>
     );
   }
+
+  // Filter suggestions: Get other posts and some products
+  const otherPosts = BLOG_POSTS.filter(p => p.id !== post.id).slice(0, 3);
+  const suggestedProducts = PRODUCTS.slice(0, 3);
 
   const handleShare = () => {
     if (navigator.share) {
@@ -84,6 +88,58 @@ export const BlogPostPage: React.FC = () => {
             </div>
           </div>
         )}
+
+        <hr className="my-16 border-brand-paper" />
+
+        {/* Further Exploration / Relevant Links */}
+        <div className="mb-12">
+          <h3 className="text-2xl font-serif font-bold mb-8 text-brand-darkest">Further Exploration</h3>
+          <div className="flex overflow-x-auto pb-8 gap-6 no-scrollbar snap-x snap-mandatory">
+
+            {/* Related Posts */}
+            {otherPosts.map(p => (
+              <Link
+                key={p.id}
+                to={`/blog/${p.id}`}
+                className="min-w-[280px] md:min-w-[320px] snap-center bg-white rounded-xl border border-brand-paper shadow-sm hover:shadow-lg transition-all cursor-pointer overflow-hidden flex flex-col"
+              >
+                <div className="h-40 overflow-hidden">
+                  <img src={p.images[0]} alt={p.title} className="w-full h-full object-cover" />
+                </div>
+                <div className="p-5 flex flex-col flex-grow">
+                  <span className="text-xs font-bold text-brand-plum uppercase tracking-wider mb-2">{p.category}</span>
+                  <h4 className="font-serif font-bold text-lg leading-tight mb-2 text-brand-darkest">{p.title}</h4>
+                  <span className="text-brand-clay text-sm font-bold mt-auto">Read Article &rarr;</span>
+                </div>
+              </Link>
+            ))}
+
+            {/* Related Products */}
+            {suggestedProducts.map(prod => (
+              <div
+                key={prod.id}
+                className="min-w-[280px] md:min-w-[320px] snap-center bg-white rounded-xl border border-brand-paper shadow-sm hover:shadow-lg transition-all overflow-hidden flex flex-col"
+              >
+                <div className="h-40 overflow-hidden relative">
+                  <img src={prod.imageUrl} alt={prod.name} className="w-full h-full object-cover" />
+                  <div className="absolute top-2 right-2 bg-brand-clay text-white text-xs font-bold px-2 py-1 rounded">Recommended</div>
+                </div>
+                <div className="p-5 flex flex-col flex-grow">
+                  <h4 className="font-serif font-bold text-lg leading-tight mb-2 text-brand-darkest">{prod.name}</h4>
+                  <p className="text-xs text-gray-500 mb-3 line-clamp-2">{prod.description}</p>
+                  <a
+                    href={prod.affiliateLink}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-brand-clay text-sm font-bold mt-auto hover:underline"
+                  >
+                    View Product &rarr;
+                  </a>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </article>
   );
