@@ -9,6 +9,8 @@ import { CommunityPage } from './pages/CommunityPage';
 import { EducatorsPage } from './pages/EducatorsPage';
 import { BlogPostPage } from './pages/BlogPostPage';
 import { BlogPage } from './pages/BlogPage';
+import { PrivacyPage } from './pages/PrivacyPage';
+import { TermsPage } from './pages/TermsPage';
 import { AdminPage } from './pages/AdminPage';
 import { BlogPost, AffiliateProduct, StaffAdvice } from './types';
 import { useAuth } from './hooks/useAuth';
@@ -89,6 +91,8 @@ const App: React.FC = () => {
       <Route path="/educators" element={<Layout><EducatorsPage /></Layout>} />
       <Route path="/blog" element={<Layout><BlogPage /></Layout>} />
       <Route path="/blog/:id" element={<Layout><BlogPostPage /></Layout>} />
+      <Route path="/privacy" element={<Layout><PrivacyPage /></Layout>} />
+      <Route path="/terms" element={<Layout><TermsPage /></Layout>} />
 
       {/* Admin route (no Layout wrapper - has its own layout) */}
       <Route

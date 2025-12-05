@@ -150,14 +150,17 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
 
           <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center text-white/40 text-sm">
             <p>&copy; 2024 Montessori Milestones.</p>
-            <div className="flex-1" />
-            <Link
-              to="/admin"
-              className="flex items-center gap-1 hover:text-brand-clay transition-colors opacity-50 hover:opacity-100 mt-4 md:mt-0"
-              title="Admin Access"
-            >
-              <Lock size={12} /> Admin
-            </Link>
+            <div className="flex items-center gap-6 mt-4 md:mt-0">
+              <Link to="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
+              <Link to="/terms" className="hover:text-white transition-colors">Terms of Service</Link>
+              <Link
+                to="/admin"
+                className="flex items-center gap-1 hover:text-brand-clay transition-colors opacity-50 hover:opacity-100"
+                title="Admin Access"
+              >
+                <Lock size={12} /> Admin
+              </Link>
+            </div>
           </div>
         </div>
       </footer>
