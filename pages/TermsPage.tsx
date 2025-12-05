@@ -123,7 +123,7 @@ export const TermsPage: React.FC = () => {
 
           <h2>Governing Law</h2>
           <p>
-            These Terms of Service are governed by the laws of the United States. Any disputes arising from these terms or your use of the website shall be resolved in the courts of [Your State/Jurisdiction].
+            These Terms of Service are governed by the laws of the United States and the State of Pennsylvania. Any disputes arising from these terms or your use of the website shall be resolved in the courts of the Commonwealth of Pennsylvania.
           </p>
 
           <h2>Changes to Terms</h2>
