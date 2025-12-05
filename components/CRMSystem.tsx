@@ -27,6 +27,8 @@ import { Logo } from './Logo';
 
 interface CRMSystemProps {
   onClose: () => void;
+  onSignOut?: () => void;
+  userEmail?: string;
   posts: BlogPost[];
   products: AffiliateProduct[];
   staffAdvice: StaffAdvice[];
@@ -69,6 +71,8 @@ const OCEAN_THEME = {
 
 export const CRMSystem: React.FC<CRMSystemProps> = ({
   onClose,
+  onSignOut,
+  userEmail,
   posts,
   products,
   staffAdvice,
@@ -229,15 +233,23 @@ export const CRMSystem: React.FC<CRMSystemProps> = ({
         <div className="p-4 border-t border-white/10">
            <div className="flex items-center gap-3 mb-4">
              <div className="w-8 h-8 rounded-full bg-brand-clay/20 flex items-center justify-center text-xs font-bold text-brand-clay border border-brand-clay transition-colors duration-500">
-               ER
+               {userEmail ? userEmail.charAt(0).toUpperCase() : 'A'}
              </div>
-             <div className="text-sm">
-               <p className="font-bold">Elena Rossi</p>
-               <p className="text-white/50 text-xs">Admin</p>
+             <div className="text-sm overflow-hidden">
+               <p className="font-bold truncate">{userEmail || 'Admin'}</p>
+               <p className="text-white/50 text-xs">Administrator</p>
              </div>
            </div>
-           <button onClick={onClose} className="w-full flex items-center justify-center gap-2 text-white/60 hover:text-white transition-colors text-sm py-2">
-             <X size={16} /> Exit Admin
+           <button
+             onClick={() => {
+               if (onSignOut) {
+                 onSignOut();
+               }
+               onClose();
+             }}
+             className="w-full flex items-center justify-center gap-2 text-white/60 hover:text-white transition-colors text-sm py-2"
+           >
+             <X size={16} /> {onSignOut ? 'Sign Out' : 'Exit Admin'}
            </button>
         </div>
       </aside>

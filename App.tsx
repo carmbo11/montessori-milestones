@@ -7,15 +7,21 @@ import { Button } from './components/Button';
 import { MontessoriBot } from './components/MontessoriBot';
 import { Hero } from './components/Hero';
 import { CRMSystem } from './components/CRMSystem';
+import { AdminLogin } from './components/AdminLogin';
 import { Logo } from './components/Logo';
 import { Menu, X, Instagram, Facebook, Mail, Heart, ArrowRight, Lock, ArrowLeft, Users, Calendar, User, Quote, HandHeart, CalendarDays, MessageCircle, BookOpen, Layout, Eye, Scissors, Download, AlertCircle, Share2 } from 'lucide-react';
 import { generateBlogSummary } from './services/groqService';
 import { BlogPost, AffiliateProduct, StaffAdvice } from './types';
+import { useAuth } from './hooks/useAuth';
 
 const App: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [dailyQuote, setDailyQuote] = useState("Loading daily inspiration...");
   const [showCRM, setShowCRM] = useState(false);
+  const [showAdminLogin, setShowAdminLogin] = useState(false);
+
+  // Auth state
+  const { user, isAdmin, loading: authLoading, signIn, signOut } = useAuth();
 
   // Navigation State
   const [currentPage, setCurrentPage] = useState<string>('home');
@@ -33,6 +39,28 @@ const App: React.FC = () => {
     };
     fetchQuote();
   }, []);
+
+  // Auto-open CRM when returning from magic link authentication
+  useEffect(() => {
+    if (!authLoading && isAdmin) {
+      // Check if we just authenticated (URL contains auth tokens)
+      const hash = window.location.hash;
+      if (hash.includes('access_token') || hash.includes('refresh_token')) {
+        setShowCRM(true);
+        // Clean up the URL
+        window.history.replaceState(null, '', window.location.pathname);
+      }
+    }
+  }, [authLoading, isAdmin]);
+
+  // Handle admin button click
+  const handleAdminClick = () => {
+    if (isAdmin) {
+      setShowCRM(true);
+    } else {
+      setShowAdminLogin(true);
+    }
+  };
 
   // --- CMS Handlers ---
 
@@ -564,10 +592,20 @@ const App: React.FC = () => {
   return (
     <div className="min-h-screen font-sans text-brand-darkest bg-brand-cream selection:bg-brand-clay selection:text-white flex flex-col">
 
-      {/* CRM Overlay */}
-      {showCRM && (
+      {/* Admin Login Modal */}
+      {showAdminLogin && (
+        <AdminLogin
+          onClose={() => setShowAdminLogin(false)}
+          onSignIn={signIn}
+        />
+      )}
+
+      {/* CRM Overlay - only accessible if authenticated as admin */}
+      {showCRM && isAdmin && (
         <CRMSystem
           onClose={() => setShowCRM(false)}
+          onSignOut={signOut}
+          userEmail={user?.email}
           posts={posts}
           products={products}
           staffAdvice={staffAdvice}
@@ -711,11 +749,11 @@ const App: React.FC = () => {
             <p>&copy; 2024 Montessori Milestones.</p>
             <div className="flex items-center space-x-6 mt-4 md:mt-0">
               <button
-                onClick={() => setShowCRM(true)}
+                onClick={handleAdminClick}
                 className="flex items-center gap-1 hover:text-brand-clay transition-colors"
                 title="Admin Access"
               >
-                <Lock size={12} /> Admin Login
+                <Lock size={12} /> {isAdmin ? 'Open Admin' : 'Admin Login'}
               </button>
             </div>
           </div>
