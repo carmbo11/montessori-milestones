@@ -4,7 +4,14 @@
 - [x] Site scrolls down to chatbot on page load - FIXED
 
 ## In Progress
-- [ ] Impact.com API - Connect affiliate dashboard, auto-sync products
+- [x] Impact.com API - Integration built, waiting for approval
+  - API endpoint: `/api/impact-products`
+  - Service: `services/impactService.ts`
+  - Types: `types/impact.ts`
+  - **Env vars needed (add to Vercel when approved):**
+    - `IMPACT_ACCOUNT_SID` - Your Impact.com Account SID
+    - `IMPACT_AUTH_TOKEN` - Your Impact.com Auth Token
+    - `IMPACT_CATALOG_ID` - (Optional) Specific catalog ID for Lovevery
 
 ## High Priority
 - [ ] Enhanced chatbot - expand Lovevery catalog (all 22 Play Kits, ages 0-5)
